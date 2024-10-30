@@ -71,10 +71,30 @@ async function groupTabs() {
   }
 }
 
+async function ungroupTabs() {
+  try {
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+
+    for (const tab of tabs) {
+      if (tab.groupId !== -1) {
+        await chrome.tabs.ungroup(tab.id); // Ungroup each tab
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error ungrouping tabs:', error);
+    throw error;
+  }
+}
+
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'groupTabs') {
     groupTabs().then(() => sendResponse(true)).catch((error) => sendResponse(false));
+    return true; // Will respond asynchronously
+  } else if (request.action === 'ungroupTabs') {
+    ungroupTabs().then(() => sendResponse(true)).catch((error) => sendResponse(false));
     return true; // Will respond asynchronously
   }
 });
