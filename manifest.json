@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tab Organizer",
   "version": "1.31",
-  "description": "Organize your tabs into groups based on domains.",
+  "description": "Organize your tabs into groups automatically, with one click.",
   "permissions": [
     "tabs",
     "tabGroups"
