@@ -11,14 +11,20 @@ function getDomain(url) {
 }
 
 function getBaseDomain(url) {
-  return getDomain(url).split('.')[0];
+  const domain = getDomain(url);
+  // Split by dots
+  const parts = domain.split('.');
+  
+  // Check if there are enough parts for a valid grouping
+  if (parts.length < 2) return parts[0];
+
+  // Get the second last segment as the main domain
+  return parts[parts.length - 2]; // e.g., google from console.google.com
 }
 
 function getColorForDomain(domain) {
-  // Pick an unused color
   let color;
   if (usedColors.length === AVAILABLE_COLORS.length) {
-    // If all colors have been used, start over
     usedColors = [];
   }
   

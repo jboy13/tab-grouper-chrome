@@ -1,15 +1,26 @@
 {
-    "manifest_version": 3,
-    "name": "Tab Grouper Pro",
-    "version": "1.2",
-    "permissions": [
-      "tabs",
-      "tabGroups"
-    ],
-    "action": {
-      "default_popup": "popup.html"
-    },
-    "background": {
-      "service_worker": "background.js"
+  "manifest_version": 3,
+  "name": "Tab Organizer",
+  "version": "1.31",
+  "description": "Organize your tabs into groups based on domains.",
+  "permissions": [
+    "tabs",
+    "tabGroups"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/tab-icon.png",
+      "48": "icons/tab-icon.png",
+      "128": "icons/tab-icon.png"
     }
-  } 
+  },
+  "icons": {
+    "16": "icons/tab-icon.png",
+    "48": "icons/tab-icon.png",
+    "128": "icons/tab-icon.png"
+  }
+}
