@@ -104,8 +104,13 @@
       color: #333;
     }
 
+    .button-container {
+      display: flex;
+      gap: 12px; /* Space between buttons */
+    }
+
     #groupButton, #ungroupButton {
-      width: 100%;
+      flex: 1; /* Makes buttons take equal space */
       background: linear-gradient(135deg, #4e4376, #2b5876);
       color: white;
       border: none;
@@ -257,18 +262,21 @@
       </div>
     </div>
     
-    <button id="groupButton">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 6h18M3 12h18M3 18h18"/>
-      </svg>
-      Group Tabs
-    </button>
-    <button id="ungroupButton">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 6h18M3 12h18M3 18h18"/>
-      </svg>
-      Ungroup Tabs
-    </button>      
+    <div class="button-container">
+      <button id="groupButton">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+        Group Tabs
+      </button>
+      <button id="ungroupButton">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+        Ungroup Tabs
+      </button>
+    </div>
+
     <div id="results">
       <div class="empty-state">
         Click the button above to organize your tabs into groups
@@ -277,4 +285,4 @@
   </div>
   <script src="popup.js"></script>
 </body>
-</html> 
+</html>
