@@ -18,8 +18,25 @@ function getBaseDomain(url) {
   // Check if there are enough parts for a valid grouping
   if (parts.length < 2) return parts[0];
 
-  // Get the second last segment as the main domain
-  return parts[parts.length - 2]; // e.g., google from console.google.com
+  // Handle special cases for country-specific TLDs
+  const knownTLDs = [
+    'co.uk', 'co.jp', 'co.kr', 'co.nz', 'co.in', 'co.id', 'co.il', 
+    'com.au', 'com.br', 'com.mx', 'com.hk', 'com.sg', 'com.tr',
+    'org.uk', 'net.uk', 'gov.uk', 'ac.uk',
+    'org.au', 'net.au', 'gov.au',
+    'me.uk', 'ltd.uk', 'plc.uk'
+  ];
+
+  // Join the last parts to check against known TLDs
+  const lastParts = parts.slice(-2).join('.');
+
+  // If we have a known three-part TLD (e.g., co.uk)
+  if (parts.length >= 3 && knownTLDs.includes(lastParts)) {
+    return parts[parts.length - 3]; // Return the third last part
+  }
+
+  // Default case: return second last part
+  return parts[parts.length - 2];
 }
 
 function getColorForDomain(domain) {
