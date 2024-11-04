@@ -130,3 +130,54 @@ document.getElementById('ungroupButton').addEventListener('click', async () => {
   }
 });
 
+function updateSavedConfigsList() {
+  chrome.storage.local.get(['savedConfigs'], (result) => {
+    const configs = result.savedConfigs || {};
+    const configsContainer = document.getElementById('savedConfigs');
+    configsContainer.innerHTML = '';
+
+    for (const configName in configs) {
+      const configItem = document.createElement('div');
+      configItem.classList.add('config-item');
+      configItem.innerHTML = `
+        <div class="config-title">${configName}</div>
+        <button class="load-button" data-config="${configName}">Load</button>
+        <button class="delete-button" data-config="${configName}">Delete</button>
+      `;
+      configsContainer.appendChild(configItem);
+    }
+
+    // Attach event listeners to load and delete buttons
+    document.querySelectorAll('.load-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const configName = e.target.getAttribute('data-config');
+        chrome.runtime.sendMessage({ action: 'loadConfig', configName });
+      });
+    });
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const configName = e.target.getAttribute('data-config');
+        chrome.runtime.sendMessage({ action: 'deleteConfig', configName });
+      });
+    });
+  });
+}
+
+// Save configuration on button click
+document.getElementById('saveConfigButton').addEventListener('click', () => {
+  const configName = prompt("Enter a name for this configuration:");
+  if (configName) {
+    chrome.runtime.sendMessage({ action: 'saveConfig', configName });
+  }
+});
+
+// Listen for messages from background.js to update list
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.action === 'updateConfigsList') {
+    updateSavedConfigsList();
+  }
+});
+
+// Update the saved configurations list on popup load
+document.addEventListener('DOMContentLoaded', updateSavedConfigsList);

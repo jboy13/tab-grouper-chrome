@@ -157,3 +157,84 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true; // Will respond asynchronously
   }
 });
+
+// background.js
+
+async function saveCurrentConfiguration(configName) {
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const groups = await chrome.tabGroups.query({ windowId: chrome.windows.WINDOW_ID_CURRENT });
+
+  const configData = {
+    groups: groups.map(group => ({
+      title: group.title,
+      color: group.color,
+      tabs: tabs
+        .filter(tab => tab.groupId === group.id)
+        .map(tab => ({ title: tab.title, url: tab.url, favicon: tab.favIconUrl })),
+    }))
+  };
+
+  // Save configuration in local storage
+  chrome.storage.local.get({ savedConfigs: {} }, (result) => {
+    const configs = result.savedConfigs;
+    configs[configName] = configData;
+    chrome.storage.local.set({ savedConfigs: configs }, () => {
+      chrome.runtime.sendMessage({ action: 'updateConfigsList' }); // Trigger an update in popup.js
+    });
+  });
+}
+
+async function loadConfiguration(configName) {
+  chrome.storage.local.get(['savedConfigs'], async (result) => {
+    const configData = result.savedConfigs[configName];
+    if (!configData) return;
+
+    // Get existing tabs in the current window
+    const existingTabs = await chrome.tabs.query({ currentWindow: true });
+
+    // Close all tabs except the active one to clear the window
+    const tabsToClose = existingTabs.slice(1); // Keep one tab to avoid window closing
+    await chrome.tabs.remove(tabsToClose.map(tab => tab.id));
+
+    // Load configuration tabs and groups
+    for (const group of configData.groups) {
+      const tabIds = [];
+      for (const tab of group.tabs) {
+        const newTab = await chrome.tabs.create({ url: tab.url, active: false });
+        tabIds.push(newTab.id);
+      }
+      const groupId = await chrome.tabs.group({ tabIds });
+      await chrome.tabGroups.update(groupId, {
+        title: group.title,
+        color: group.color
+      });
+    }
+  });
+}
+
+function deleteConfiguration(configName) {
+  chrome.storage.local.get({ savedConfigs: {} }, (result) => {
+    const configs = result.savedConfigs;
+    delete configs[configName];
+    chrome.storage.local.set({ savedConfigs: configs }, () => {
+      chrome.runtime.sendMessage({ action: 'updateConfigsList' }); // Trigger an update in popup.js
+    });
+  });
+}
+
+// Handle save, load, and delete actions
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'saveConfig') {
+    saveCurrentConfiguration(request.configName);
+    sendResponse(true);
+    return true;
+  } else if (request.action === 'loadConfig') {
+    loadConfiguration(request.configName);
+    sendResponse(true);
+    return true;
+  } else if (request.action === 'deleteConfig') {
+    deleteConfiguration(request.configName);
+    sendResponse(true);
+    return true;
+  }
+});
