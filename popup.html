@@ -256,6 +256,15 @@
       font-size: 14px;
       color: #4e4376;
     }
+  
+    .toggle-label-1 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #4e4376;
+    }
 
     .toggle-label::before {
       content: '';
@@ -339,9 +348,12 @@
   <!-- Add this after the stats-container section and before the button-container -->
   <div class="grouping-toggle">
     <div class="toggle-container">
+      <label for="groupingMode" class="toggle-label-1">
+        <span class="toggle-text">Domain</span>
+      </label>
       <input type="checkbox" id="groupingMode" class="toggle-input">
       <label for="groupingMode" class="toggle-label">
-        <span class="toggle-text">Group by subdomain</span>
+        <span class="toggle-text">Subdomain</span>
       </label>
     </div>
   </div>
