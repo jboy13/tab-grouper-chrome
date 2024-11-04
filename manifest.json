@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Tab Grouper Pro",
-  "version": "1.4",
+  "version": "1.41",
   "description": "Organize your tabs into groups automatically, with one click.",
   "permissions": [
     "tabs",
-    "tabGroups"
+    "tabGroups",
+    "storage"
   ],
   "background": {
     "service_worker": "background.js"

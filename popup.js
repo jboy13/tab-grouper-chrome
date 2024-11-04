@@ -1,3 +1,5 @@
+let useSubdomains = false;
+
 async function updateStats() {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   const groups = await chrome.tabGroups.query({ windowId: chrome.windows.WINDOW_ID_CURRENT });
@@ -60,8 +62,20 @@ async function updateStats() {
   }
 }
 
+// Load saved preferences
+chrome.storage.local.get(['useSubdomains'], (result) => {
+  useSubdomains = result.useSubdomains || false;
+  document.getElementById('groupingMode').checked = useSubdomains;
+});
+
 // Update stats when popup opens
 updateStats();
+
+// Handle toggle change
+document.getElementById('groupingMode').addEventListener('change', (e) => {
+  useSubdomains = e.target.checked;
+  chrome.storage.local.set({ useSubdomains });
+});
 
 document.getElementById('groupButton').addEventListener('click', async () => {
   const resultDiv = document.getElementById('results');
@@ -73,7 +87,10 @@ document.getElementById('groupButton').addEventListener('click', async () => {
   `;
   
   try {
-    await chrome.runtime.sendMessage({ action: 'groupTabs' });
+    await chrome.runtime.sendMessage({ 
+      action: 'groupTabs',
+      useSubdomains 
+    });
     // Update stats after grouping
     await updateStats();
   } catch (error) {
@@ -112,3 +129,4 @@ document.getElementById('ungroupButton').addEventListener('click', async () => {
     `;
   }
 });
+

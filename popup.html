@@ -229,6 +229,67 @@
       line-height: 1.6;
     }
 
+    .grouping-toggle {
+      margin: 16px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #4e4376;
+    }
+
+    .toggle-label::before {
+      content: '';
+      width: 36px;
+      height: 20px;
+      background-color: #cbd5e0;
+      border-radius: 20px;
+      position: relative;
+      transition: background-color 0.2s;
+    }
+
+    .toggle-label::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background-color: white;
+      border-radius: 50%;
+      margin-left: 2px;
+      transition: transform 0.2s;
+    }
+
+    .toggle-input:checked + .toggle-label::before {
+      background-color: #4e4376;
+    }
+
+    .toggle-input:checked + .toggle-label::after {
+      transform: translateX(16px);
+    }
+
+    .toggle-text {
+      user-select: none;
+    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -261,7 +322,6 @@
         <div class="stat-value" id="groupCount">-</div>
       </div>
     </div>
-    
     <div class="button-container">
       <button id="groupButton">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -276,7 +336,15 @@
         Ungroup Tabs
       </button>
     </div>
-
+  <!-- Add this after the stats-container section and before the button-container -->
+  <div class="grouping-toggle">
+    <div class="toggle-container">
+      <input type="checkbox" id="groupingMode" class="toggle-input">
+      <label for="groupingMode" class="toggle-label">
+        <span class="toggle-text">Group by subdomain</span>
+      </label>
+    </div>
+  </div>
     <div id="results">
       <div class="empty-state">
         Click the button above to organize your tabs into groups
