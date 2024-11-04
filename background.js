@@ -41,17 +41,20 @@ function getBaseDomain(url) {
 
 function getDomainForGrouping(url, useSubdomains) {
   const domain = getDomain(url);
+  
   if (!useSubdomains) {
     return getBaseDomain(url);
   }
   
-  // For subdomain grouping, we'll use the first part of the domain
+  // Split the domain into parts by dots
   const parts = domain.split('.');
+  
+  // If there are only two parts, there is no subdomain, so return the main part
   if (parts.length <= 2) {
-    return parts[0]; // Return the first part if there's no subdomain
+    return parts[0];
   }
   
-  // Handle special cases for known TLDs
+  // Handle special cases for known TLDs (e.g., ".co.uk", ".com.au")
   const knownTLDs = [
     'co.uk', 'co.jp', 'co.kr', 'co.nz', 'co.in', 'co.id', 'co.il', 
     'com.au', 'com.br', 'com.mx', 'com.hk', 'com.sg', 'com.tr',
@@ -60,13 +63,17 @@ function getDomainForGrouping(url, useSubdomains) {
     'me.uk', 'ltd.uk', 'plc.uk'
   ];
   
+  // Check if the last two parts match a known TLD
   const lastParts = parts.slice(-2).join('.');
   if (knownTLDs.includes(lastParts)) {
+    // If a known TLD, consider the segment just before it as the base domain
     return parts.slice(0, -3).join('.') || parts[0];
   }
   
-  return parts.slice(0, -2).join('.') || parts[0];
+  // Default case: return the first subdomain part (e.g., "console" from "console.cloud.google.com")
+  return parts[0];
 }
+
 
 function getColorForDomain(domain) {
   let color;
